@@ -1,0 +1,23 @@
+/** 
+ * 
+ */
+package io.sarl.simulation.multirotor
+
+import io.sarl.core.Behaviors
+import io.sarl.core.Initialize
+import io.sarl.simulation.multirotor.behaviors.target.ReachTargetPoint3D
+
+/** 
+ * Agent in charge of driving a drone
+ * @author Alexandre Lombard
+ * 
+ */
+agent DroneAgent {
+	uses Behaviors
+	
+	on Initialize {		
+		//registerBehavior(new ForwardWithBasicAvoidance(this))
+		//registerBehavior(new ReachTargetPoint(this))
+		registerBehavior(new ReachTargetPoint3D(this))
+	}
+}

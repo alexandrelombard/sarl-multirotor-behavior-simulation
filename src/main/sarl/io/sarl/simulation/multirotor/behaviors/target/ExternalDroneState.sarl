@@ -1,0 +1,46 @@
+/** 
+ * 
+ */
+package io.sarl.simulation.multirotor.behaviors.target
+
+import io.sarl.simulation.multirotor.perceptions.IKinematicsState
+import io.sarl.simulation.multirotor.perceptions.IPose
+
+/** 
+ * Class used to store the state of the other agents
+ * @author Alexandre Lombard
+ */
+class ExternalDroneState {
+	public val pose : IPose
+	public val state : IKinematicsState
+
+	/**
+	 * Constructor used to build a state given a pose and a kinematics state
+	 * @param pose the pose
+	 * @param state the kinematics state
+	 */
+	new(pose : IPose, state : IKinematicsState) {
+		this.pose = pose
+		this.state = state
+	}
+
+	/**
+	 * Constructor used to compute an updated state from a previous state and a new pose
+	 * @param previousState the previous state
+	 * @param pose the new pose
+	 */
+	new(previousState : ExternalDroneState, pose : IPose) {
+		this.pose = pose
+		this.state = previousState.state
+	}
+
+	/**
+	 * Constructor used to compute an updated state from a previous state and a new kinematics state
+	 * @param previousState the previous state
+	 * @param kinematicsState the new kinematics state 
+	 */
+	new(previousState : ExternalDroneState, kinematicsState : IKinematicsState) {
+		this.pose = previousState.pose
+		this.state = kinematicsState
+	}
+}

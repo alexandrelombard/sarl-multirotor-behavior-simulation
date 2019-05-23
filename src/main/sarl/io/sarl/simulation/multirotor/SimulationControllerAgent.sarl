@@ -1,0 +1,77 @@
+/** 
+ * 
+ */
+package io.sarl.simulation.multirotor
+
+import io.sarl.core.Behaviors
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import java.util.Collections
+import io.sarl.simulation.capacities.SimulationControlCapacity
+import io.sarl.simulation.multirotor.capacities.MultirotorSimulationControlCapacity
+import io.sarl.simulation.multirotor.capacities.MultirotorSimulationPerceptionCapacity
+import io.sarl.simulation.events.StartSimulation
+import io.sarl.simulation.multirotor.behaviors.MultirotorInfluenceEmitter
+import io.sarl.simulation.behaviors.SimulationController
+import io.sarl.simulation.skills.BatchedPerceptionsPropagation
+import io.sarl.simulation.capacities.PropagatePerceptionsCapacity
+import io.sarl.simulation.capacities.AgentBodyAffectationCapacity
+import io.sarl.simulation.capacities.ApplyInfluenceCapacity
+import io.sarl.simulation.skills.FcfsFixedSizePoolAgentBodyAffectation
+import io.sarl.simulation.skills.influences.BatchedInfluenceApplication
+import io.sarl.simulation.multirotor.airsim.skills.AirSimSimulationControl
+import io.sarl.simulation.multirotor.airsim.skills.AirSimMultirotorControl
+import io.sarl.simulation.multirotor.airsim.skills.AirSimMultirotorSimulationPerception
+import io.sarl.simulation.multirotor.airsim.behaviors.AirSimMultirotorPerceptionRetriever
+
+/**
+ * Agent in charge of controlling the simulation, transmitting the influences and
+ * dispatching the perceptions .
+ * This agent has basically 3 main roles and capacities:
+ * - Managing the propagation of perceptions and influences
+ * - Managing the simulation schedule
+ * - Managing the affectation of bodies to agents
+ * @author Alexandre Lombard
+ * 
+ */
+agent SimulationControllerAgent {
+	
+	uses DefaultContextInteractions, Behaviors
+
+	uses AgentBodyAffectationCapacity
+
+	val pool = (0 .. 2).map["S" + it].toList
+	
+	on Initialize {
+		// Install the simulation control capacities
+		setSkill(new AirSimSimulationControl, SimulationControlCapacity)
+		setSkill(new AirSimMultirotorControl, MultirotorSimulationControlCapacity)
+ 		setSkill(new AirSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
+//		setSkill(new MockSimulationControl, SimulationControlCapacity)
+//		setSkill(new MockMultirotorControl, MultirotorSimulationControlCapacity)
+//		setSkill(new MockSimulationPerception, SimulationPerceptionCapacity)
+//		setSkill(new MockMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
+		
+		// region Simulation management: defining skills and behaviors
+		setSkill(new FcfsFixedSizePoolAgentBodyAffectation([|
+			val pool = pool
+			Collections.shuffle(pool)
+			return pool
+		].apply), AgentBodyAffectationCapacity)
+		
+		setSkill(new BatchedInfluenceApplication(
+			[t, i|i.size >= affectedBodiesCount],
+			2,
+			false
+		), ApplyInfluenceCapacity)
+		
+		setSkill(new BatchedPerceptionsPropagation(), PropagatePerceptionsCapacity)
+		
+		registerBehavior(new MultirotorInfluenceEmitter(this))
+		registerBehavior(new AirSimMultirotorPerceptionRetriever(this))
+		registerBehavior(new SimulationController(this))
+		// endregion
+		
+		emit(new StartSimulation)
+	}
+}

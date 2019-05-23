@@ -1,0 +1,20 @@
+/** 
+ * 
+ */
+package io.sarl.simulation.multirotor.communication
+
+import io.sarl.simulation.multirotor.perceptions.IPose
+
+/** 
+ * Event emitted by agent to notify their pose to the other agents.
+ * This event does not directly interact with the simulation
+ * @author Alexandre Lombard
+ * 
+ */
+event NotifyPose {
+	val pose: IPose
+	
+	new (pose: IPose) {
+		this.pose = pose
+	}
+}
