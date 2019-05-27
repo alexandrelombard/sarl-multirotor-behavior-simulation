@@ -8,7 +8,6 @@ import io.sarl.core.Destroy
 import io.sarl.core.Initialize
 import io.sarl.core.Logging
 import io.sarl.core.Schedules
-import io.sarl.math.Vector2
 import io.sarl.simulation.multirotor.influences.MoveByVelocity
 import io.sarl.simulation.multirotor.influences.Takeoff
 import io.sarl.simulation.multirotor.perceptions.IPose
@@ -16,6 +15,10 @@ import io.sarl.simulation.multirotor.perceptions.LidarDataPerception
 import io.sarl.simulation.multirotor.perceptions.PosePerception
 import java.util.ArrayList
 import java.util.List
+import org.arakhne.afc.math.geometry.d2.d.Vector2d
+
+import static extension io.sarl.math.extensions.Vector2dExtensions.toAngle
+import static extension io.sarl.math.extensions.QuaternionExtensions.getEulerAngles
 
 /** 
  * Make a drone agent goes forward with a basic obstacle avoidance behavior
@@ -27,8 +30,8 @@ behavior ForwardWithBasicAvoidance {
 	
 
 	var initialPose: IPose = null
-	var targetDir: Float = 0.0f
-	var direction : Float = 0.0f
+	var targetDir: double = 0.0f
+	var direction : double = 0.0f
 
 	/**
 	 * The following strategy is initialized: the drone take-off, and after a given amount of time, it moves in
@@ -42,7 +45,7 @@ behavior ForwardWithBasicAvoidance {
 		// Note: X is forward
 		in(3000) [
 			every(1000) [
-				val dir = synchronized(this.direction) { this.direction }
+				val dir = this.direction
 				emit(new MoveByVelocity(
 					Math.cos(dir).floatValue,
 					Math.sin(dir).floatValue,
@@ -64,23 +67,23 @@ behavior ForwardWithBasicAvoidance {
 		val lidarData = occurrence.lidarData
 		val pointCloud = lidarData.pointCloud
 
-		val repulsionForces : List<Vector2> = new ArrayList<Vector2>(pointCloud.length)
+		val repulsionForces : List<Vector2d> = new ArrayList<Vector2d>(pointCloud.length)
 
 		// The lidar is supposed to have 1 channel and to get 360 points per second
 		// We compute a repulsion force per point
 		for (var idx = 0; idx < pointCloud.length; idx += 3) {
 			// We ignore points which are not on the drone plane
 			if (Math.abs(pointCloud.get(idx + 2)) < 0.25) {
-				val dirVector = new Vector2(pointCloud.get(idx), pointCloud.get(idx + 1))
+				val dirVector = new Vector2d(pointCloud.get(idx), pointCloud.get(idx + 1))
 				// We ignore points which are not in front of the drone
 				if (Math.abs(dirVector.toAngle()) < Math.PI.floatValue / 4f)
-					repulsionForces.add(dirVector * (-1.0f / Math.pow(dirVector.norm, 2)).floatValue)
+					repulsionForces.add(dirVector * (-1.0f / Math.pow(dirVector.length, 2)).floatValue)
 			}
 		}
 
 		val resultingForce = repulsionForces.reduce[p1, p2|p1 + p2]
 
-		synchronized(this.direction) {
+		synchronized(this) {
 			this.direction = if(resultingForce === null) this.targetDir else resultingForce.toAngle + Math.PI.floatValue / 2f
 		}
 	}
@@ -89,7 +92,7 @@ behavior ForwardWithBasicAvoidance {
 	 * On pose perception, the internal state of the drone is updated
 	 */
 	on PosePerception {
-		synchronized (this.direction) {
+		synchronized (this) {
 			if (initialPose === null) {
 				this.initialPose = occurrence.pose
 				this.targetDir = this.initialPose.orientation.eulerAngles.z

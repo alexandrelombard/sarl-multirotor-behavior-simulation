@@ -3,25 +3,25 @@
  */
 package io.sarl.simulation.multirotor.filter.mean
 
-import io.sarl.math.Vector3
+import org.arakhne.afc.math.geometry.d3.d.Vector3d
 
 /** 
  * Mean filter for Vector3 objects
  * @author Alexandre
  * 
  */
-class Vector3MeanFilter extends AbstractMeanFilter<Vector3> {
+class Vector3MeanFilter extends AbstractMeanFilter<Vector3d> {
 	
 	/**
 	 * Builds the mean filter with the given default value
 	 * @param size the size of the kernel
 	 * @param defaultValue the default value when building the kernel
 	 */
-	new (size: Integer, defaultValue: Vector3 = new Vector3()) {
+	new (size: Integer, defaultValue: Vector3d = new Vector3d()) {
 		super(size, defaultValue)
 	}
 	
-	def filter(v : Vector3) : Vector3 {
+	def filter(v : Vector3d) : Vector3d {
 		addValue(v)
 		
 		return values.map[it * (1.0f / values.size)].reduce[p1, p2 | p1 + p2]

@@ -6,13 +6,15 @@ package io.sarl.simulation.multirotor.behaviors.target
 import fr.utbm.airsim.api.Vector3r
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.lang.core.Address
-import io.sarl.math.Vector3
 import io.sarl.simulation.multirotor.communication.NotifyKinematics
 import io.sarl.simulation.multirotor.communication.NotifyPose
 import io.sarl.simulation.multirotor.perceptions.GroundTruthKinematicsPerception
 import io.sarl.simulation.multirotor.perceptions.IPose
 import io.sarl.simulation.multirotor.perceptions.PosePerception
 import java.util.concurrent.ConcurrentHashMap
+import org.arakhne.afc.math.geometry.d3.d.Vector3d
+
+import static extension io.sarl.math.extensions.Vector3dExtensions.normalized
 
 /** 
  * Represents the abstract reach target point behavior
@@ -23,14 +25,14 @@ abstract behavior AbstractReachTargetPoint {
 	uses DefaultContextInteractions
 	
 	// region Goal of the agent
-	protected var targetPoint : Vector3 = null
+	protected var targetPoint : Vector3d = null
 	// endregion
 
 	// region Internal state of the agent
 	protected var initialPose : IPose = null
-	protected var initialVelocity : Vector3 = null
+	protected var initialVelocity : Vector3d = null
 	protected var pose : IPose
-	protected var velocity = new Vector3()
+	protected var velocity = new Vector3d()
 	// endregion
 	
 	// region Data about the state of the other agents
@@ -95,7 +97,7 @@ abstract behavior AbstractReachTargetPoint {
 	 * Utility extension function to convert a Vector3r (from AirSim API) to a Vector3 (SARL)
 	 */
 	def toVector3(v: Vector3r) {
-		return new Vector3(v.x, v.y, v.z)
+		return new Vector3d(v.x, v.y, v.z)
 	}
 	
 	/**
@@ -104,7 +106,7 @@ abstract behavior AbstractReachTargetPoint {
 	 * @param alpha a scaling value (a bigger value will cause a bigger scale)
 	 * @param tau a time factor: if tau increases, the sliding scale will increase faster when t decreases
 	 */
-	def computeSlidingScale(t: Float, offset: Float = 0.25f, alpha: Float = 2f, tau: Float = 8f) {
+	def computeSlidingScale(t : double, offset : double = 0.25, alpha : double = 2, tau : double = 8) {
 		return ((alpha - offset) * Math.exp(-t / tau) ) + offset
 	}
 	
@@ -115,8 +117,9 @@ abstract behavior AbstractReachTargetPoint {
 	 * @param w scaling factor on the attraction (the bigger it is, the bigger the attraction is)
 	 * @param alpha if alpha is small the relative importance of the sliding scale will quickly decrease
 	 */
-	def computeAttraction(targetDirection: Vector3, slidingScale: Float, w: Float = 10.0f, alpha: Float = 2.0f) {
+	def computeAttraction(targetDirection : Vector3d, slidingScale : double, w : double = 10.0,
+		alpha : double = 2.0) {
 		val delta = if(slidingScale < 1e-7f) 1f else 1f - Math.exp(-alpha / slidingScale)
-		return targetDirection.normalized.times((w * delta).floatValue)
+		return targetDirection.normalized * ((w * delta))
 	}
 }
