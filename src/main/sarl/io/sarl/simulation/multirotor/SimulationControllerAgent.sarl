@@ -22,7 +22,7 @@ import io.sarl.simulation.skills.influences.BatchedInfluenceApplication
 import io.sarl.simulation.multirotor.airsim.skills.AirSimSimulationControl
 import io.sarl.simulation.multirotor.airsim.skills.AirSimMultirotorControl
 import io.sarl.simulation.multirotor.airsim.skills.AirSimMultirotorSimulationPerception
-import io.sarl.simulation.multirotor.airsim.behaviors.AirSimMultirotorPerceptionRetriever
+import io.sarl.simulation.multirotor.behaviors.MultirotorPerceptionRetriever
 
 /**
  * Agent in charge of controlling the simulation, transmitting the influences and
@@ -68,7 +68,7 @@ agent SimulationControllerAgent {
 		setSkill(new BatchedPerceptionsPropagation(), PropagatePerceptionsCapacity)
 		
 		registerBehavior(new MultirotorInfluenceEmitter(this))
-		registerBehavior(new AirSimMultirotorPerceptionRetriever(this))
+		registerBehavior(new MultirotorPerceptionRetriever(this))
 		registerBehavior(new SimulationController(this))
 		// endregion
 		
