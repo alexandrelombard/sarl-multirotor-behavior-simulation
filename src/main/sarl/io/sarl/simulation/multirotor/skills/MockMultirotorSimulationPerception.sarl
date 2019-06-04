@@ -1,0 +1,49 @@
+/** 
+ * 
+ */
+package io.sarl.simulation.multirotor.skills
+
+import io.sarl.math.Quaternion
+import io.sarl.simulation.multirotor.capacities.MultirotorSimulationPerceptionCapacity
+import io.sarl.simulation.multirotor.perceptions.IKinematicsState
+import io.sarl.simulation.multirotor.perceptions.IMultirotorState
+import io.sarl.simulation.multirotor.perceptions.IPose
+import org.arakhne.afc.math.geometry.d3.d.Vector3d
+
+/** 
+ * Mock for the multirotor simulation perception implementing the corresponding capacity.
+ * The behavior is to return empty and constant perceptions.
+ * @author Alexandre Lombard
+ * 
+ */
+skill MockMultirotorSimulationPerception implements MultirotorSimulationPerceptionCapacity {
+
+	def getMultirotorState(vehicleName : String) : IMultirotorState {
+		return new IMultirotorState() {}
+	}
+	
+	def getObjectPose(objectName : String) : IPose {
+		return new IPose() {
+			def getPosition : Vector3d {
+				return new Vector3d()
+			}
+			
+			def getOrientation : Quaternion {
+				return new Quaternion(0.0f, 1.0f, 0.0f, 0.0f)
+			}
+		}
+	}
+	
+	def getGroundTruthKinematics(vehicleName : String) : IKinematicsState {
+		return new IKinematicsState() {
+			def getLinearVelocity : Vector3d {
+				return new Vector3d()
+			}
+			
+			def getLinearAcceleration : Vector3d {
+				return new Vector3d()
+			}
+		}
+	}
+	
+}

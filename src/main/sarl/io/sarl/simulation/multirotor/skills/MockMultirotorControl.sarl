@@ -1,0 +1,48 @@
+/** 
+ * 
+ */
+package io.sarl.simulation.multirotor.skills
+
+import io.sarl.simulation.multirotor.capacities.MultirotorSimulationControlCapacity
+
+/** 
+ * Mock for the multirotor control implementing the corresponding capacity.
+ * Does not have any behavior.
+ * @author Alexandre Lombard
+ * 
+ */
+skill MockMultirotorControl implements MultirotorSimulationControlCapacity {
+
+	override takeOff(vehicleName : String) {
+		//
+	}
+
+	override land(vehicleName : String) {
+		//
+	}
+
+	override goHome(vehicleName : String) {
+		//
+	}
+
+	override enableControl(vehicleName : String) {
+		//
+	}
+	
+	def moveByVelocity(vehicleName : String, vx : double, vy : double, vz : double, duration : double) {
+		//
+	}
+	
+	def moveToPosition(vehicleName : String, x : double, y : double, z : double, velocity : double) {
+		//
+	}
+	
+	def rotateByYawRate(vehicleName : String, yawRate : double, duration : double) {
+		//
+	}
+	
+	def rotateToYaw(vehicleName : String, yaw : double) {
+		//
+	}
+	
+}

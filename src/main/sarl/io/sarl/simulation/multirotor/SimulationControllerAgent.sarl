@@ -23,6 +23,9 @@ import io.sarl.simulation.multirotor.airsim.skills.AirSimSimulationControl
 import io.sarl.simulation.multirotor.airsim.skills.AirSimMultirotorControl
 import io.sarl.simulation.multirotor.airsim.skills.AirSimMultirotorSimulationPerception
 import io.sarl.simulation.multirotor.behaviors.MultirotorPerceptionRetriever
+import io.sarl.simulation.multirotor.skills.MockSimulationControl
+import io.sarl.simulation.multirotor.skills.MockMultirotorControl
+import io.sarl.simulation.multirotor.skills.MockMultirotorSimulationPerception
 
 /**
  * Agent in charge of controlling the simulation, transmitting the influences and
@@ -44,13 +47,13 @@ agent SimulationControllerAgent {
 	
 	on Initialize {
 		// Install the simulation control capacities
-		setSkill(new AirSimSimulationControl, SimulationControlCapacity)
-		setSkill(new AirSimMultirotorControl, MultirotorSimulationControlCapacity)
- 		setSkill(new AirSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
-//		setSkill(new MockSimulationControl, SimulationControlCapacity)
-//		setSkill(new MockMultirotorControl, MultirotorSimulationControlCapacity)
+//		setSkill(new AirSimSimulationControl, SimulationControlCapacity)
+//		setSkill(new AirSimMultirotorControl, MultirotorSimulationControlCapacity)
+// 		setSkill(new AirSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
+		setSkill(new MockSimulationControl, SimulationControlCapacity)
+		setSkill(new MockMultirotorControl, MultirotorSimulationControlCapacity)
 //		setSkill(new MockSimulationPerception, SimulationPerceptionCapacity)
-//		setSkill(new MockMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
+		setSkill(new MockMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
 		
 		// region Simulation management: defining skills and behaviors
 		setSkill(new FcfsFixedSizePoolAgentBodyAffectation([|
