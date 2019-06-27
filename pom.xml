@@ -58,6 +58,11 @@
 			<artifactId>sarl-multirotor-airsim-simulation</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>io.sarl.simulation.multirotor</groupId>
+			<artifactId>sarl-multirotor-kdronesim-simulation</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 		
 		<!-- AirSim API -->
 		<dependency>

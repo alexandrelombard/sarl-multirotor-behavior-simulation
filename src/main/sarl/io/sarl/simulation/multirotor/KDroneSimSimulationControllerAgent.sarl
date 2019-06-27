@@ -6,26 +6,24 @@ package io.sarl.simulation.multirotor
 import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Initialize
-import java.util.Collections
-import io.sarl.simulation.capacities.SimulationControlCapacity
-import io.sarl.simulation.multirotor.capacities.MultirotorSimulationControlCapacity
-import io.sarl.simulation.multirotor.capacities.MultirotorSimulationPerceptionCapacity
-import io.sarl.simulation.events.StartSimulation
-import io.sarl.simulation.multirotor.behaviors.MultirotorInfluenceEmitter
 import io.sarl.simulation.behaviors.SimulationController
-import io.sarl.simulation.skills.BatchedPerceptionsPropagation
-import io.sarl.simulation.capacities.PropagatePerceptionsCapacity
 import io.sarl.simulation.capacities.AgentBodyAffectationCapacity
 import io.sarl.simulation.capacities.ApplyInfluenceCapacity
+import io.sarl.simulation.capacities.PropagatePerceptionsCapacity
+import io.sarl.simulation.capacities.SimulationControlCapacity
+import io.sarl.simulation.events.StartSimulation
+import io.sarl.simulation.multirotor.behaviors.MultirotorInfluenceEmitter
+import io.sarl.simulation.multirotor.behaviors.MultirotorPerceptionRetriever
+import io.sarl.simulation.multirotor.capacities.MultirotorSimulationControlCapacity
+import io.sarl.simulation.multirotor.capacities.MultirotorSimulationPerceptionCapacity
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorControl
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorSimulationPerception
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimSimulationControl
+import io.sarl.simulation.skills.BatchedPerceptionsPropagation
 import io.sarl.simulation.skills.FcfsFixedSizePoolAgentBodyAffectation
 import io.sarl.simulation.skills.influences.BatchedInfluenceApplication
-import io.sarl.simulation.multirotor.airsim.skills.AirSimSimulationControl
-import io.sarl.simulation.multirotor.airsim.skills.AirSimMultirotorControl
-import io.sarl.simulation.multirotor.airsim.skills.AirSimMultirotorSimulationPerception
-import io.sarl.simulation.multirotor.behaviors.MultirotorPerceptionRetriever
-import io.sarl.simulation.multirotor.skills.MockSimulationControl
-import io.sarl.simulation.multirotor.skills.MockMultirotorControl
-import io.sarl.simulation.multirotor.skills.MockMultirotorSimulationPerception
+import java.util.Collections
+import io.sarl.core.Schedules
 
 /**
  * Agent in charge of controlling the simulation, transmitting the influences and
@@ -37,22 +35,22 @@ import io.sarl.simulation.multirotor.skills.MockMultirotorSimulationPerception
  * @author Alexandre Lombard
  * 
  */
-agent SimulationControllerAgent {
+agent KDroneSimSimulationControllerAgent {
 	
-	uses DefaultContextInteractions, Behaviors
+	uses DefaultContextInteractions, Behaviors, Schedules
 
 	uses AgentBodyAffectationCapacity
+	
+	// For test:
+	uses SimulationControlCapacity
 
-	val pool = (0 .. 10).map["S" + it].toList
+	val pool = (0 .. 10).map[it.toString].toList
 	
 	on Initialize {
 		// Install the simulation control capacities
-		setSkill(new AirSimSimulationControl, SimulationControlCapacity)
-		setSkill(new AirSimMultirotorControl, MultirotorSimulationControlCapacity)
- 		setSkill(new AirSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
-//		setSkill(new MockSimulationControl, SimulationControlCapacity)
-//		setSkill(new MockMultirotorControl, MultirotorSimulationControlCapacity)
-//		setSkill(new MockMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
+		setSkill(new KDroneSimSimulationControl, SimulationControlCapacity)
+		setSkill(new KDroneSimMultirotorControl, MultirotorSimulationControlCapacity)
+ 		setSkill(new KDroneSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
 		
 		// region Simulation management: defining skills and behaviors
 		setSkill(new FcfsFixedSizePoolAgentBodyAffectation([|
@@ -75,5 +73,10 @@ agent SimulationControllerAgent {
 		// endregion
 		
 		emit(new StartSimulation)
+		
+		// Test:
+		every(1000) [
+			simPrintLogMessage("Hello world", "", 0)
+		]
 	}
 }

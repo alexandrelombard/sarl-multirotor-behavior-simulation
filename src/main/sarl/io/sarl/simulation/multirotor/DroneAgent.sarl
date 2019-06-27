@@ -6,6 +6,7 @@ package io.sarl.simulation.multirotor
 import io.sarl.core.Behaviors
 import io.sarl.core.Initialize
 import io.sarl.simulation.multirotor.behaviors.target.ReachTargetPoint3D
+import io.sarl.simulation.multirotor.behaviors.forward.ForwardWithBasicAvoidance
 
 /** 
  * Agent in charge of driving a drone
