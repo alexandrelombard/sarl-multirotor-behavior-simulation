@@ -42,7 +42,7 @@ agent KDroneSimSimulationControllerAgent {
 	uses AgentBodyAffectationCapacity
 	
 	// For test:
-	uses SimulationControlCapacity
+	uses SimulationControlCapacity, MultirotorSimulationControlCapacity
 
 	val pool = (0 .. 10).map[it.toString].toList
 	
@@ -75,8 +75,8 @@ agent KDroneSimSimulationControllerAgent {
 		emit(new StartSimulation)
 		
 		// Test:
-		every(1000) [
-			simPrintLogMessage("Hello world", "", 0)
-		]
+		every(1000) [ simPrintLogMessage("Hello world", "", 0) ]
+		in(1000) [ "1".takeOff ]
+		in(5000) [ "1".land ]
 	}
 }
