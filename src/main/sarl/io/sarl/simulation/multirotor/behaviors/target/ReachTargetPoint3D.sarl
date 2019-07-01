@@ -56,7 +56,9 @@ behavior ReachTargetPoint3D extends AbstractReachTargetPoint {
 		//	-this.pose.position.getX(),
 		//	-this.pose.position.getY(),
 		//	this.pose.position.getZ() + zOffset) 		// We don't invert the Z, but we add an offset so it's not on the ground
-		this.targetPoint = computeTargetPoint(this.pose.position)
+		if (this.pose !== null && this.pose.position !== null) {
+			this.targetPoint = computeTargetPoint(this.pose.position)	
+		}
 	}
 	
 	on GroundTruthKinematicsPerception [initialized && ( occurrence.state.linearVelocity.length <= 0.01f )] {
