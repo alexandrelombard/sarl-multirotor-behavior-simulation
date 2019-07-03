@@ -26,6 +26,7 @@ import java.util.Collections
 import io.sarl.core.Schedules
 import io.sarl.simulation.skills.influences.DirectInfluencesApplication
 import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorSimulationPerceptionBatched
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorControlBatched
 
 /**
  * Agent in charge of controlling the simulation, transmitting the influences and
@@ -46,12 +47,13 @@ agent KDroneSimSimulationControllerAgent {
 	// For test:
 	uses SimulationControlCapacity, MultirotorSimulationControlCapacity
 
-	val pool = (0 .. 100).map[it.toString].toList
+	val pool = (0 .. 200).map[it.toString].toList
 	
 	on Initialize {
 		// Install the simulation control capacities
 		setSkill(new KDroneSimSimulationControl, SimulationControlCapacity)
-		setSkill(new KDroneSimMultirotorControl, MultirotorSimulationControlCapacity)
+		// setSkill(new KDroneSimMultirotorControl, MultirotorSimulationControlCapacity)
+		setSkill(new KDroneSimMultirotorControlBatched, MultirotorSimulationControlCapacity)
  		// setSkill(new KDroneSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
 		setSkill(new KDroneSimMultirotorSimulationPerceptionBatched, MultirotorSimulationPerceptionCapacity)
 		
