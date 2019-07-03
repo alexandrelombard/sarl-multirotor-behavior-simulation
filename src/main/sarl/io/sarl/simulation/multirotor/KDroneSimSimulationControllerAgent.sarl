@@ -24,6 +24,8 @@ import io.sarl.simulation.skills.FcfsFixedSizePoolAgentBodyAffectation
 import io.sarl.simulation.skills.influences.BatchedInfluenceApplication
 import java.util.Collections
 import io.sarl.core.Schedules
+import io.sarl.simulation.skills.influences.DirectInfluencesApplication
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorSimulationPerceptionBatched
 
 /**
  * Agent in charge of controlling the simulation, transmitting the influences and
@@ -44,13 +46,14 @@ agent KDroneSimSimulationControllerAgent {
 	// For test:
 	uses SimulationControlCapacity, MultirotorSimulationControlCapacity
 
-	val pool = (0 .. 10).map[it.toString].toList
+	val pool = (0 .. 100).map[it.toString].toList
 	
 	on Initialize {
 		// Install the simulation control capacities
 		setSkill(new KDroneSimSimulationControl, SimulationControlCapacity)
 		setSkill(new KDroneSimMultirotorControl, MultirotorSimulationControlCapacity)
- 		setSkill(new KDroneSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
+ 		// setSkill(new KDroneSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
+		setSkill(new KDroneSimMultirotorSimulationPerceptionBatched, MultirotorSimulationPerceptionCapacity)
 		
 		// region Simulation management: defining skills and behaviors
 		setSkill(new FcfsFixedSizePoolAgentBodyAffectation([|
@@ -66,7 +69,7 @@ agent KDroneSimSimulationControllerAgent {
 		), ApplyInfluenceCapacity)
 		
 		setSkill(new BatchedPerceptionsPropagation(), PropagatePerceptionsCapacity)
-		
+
 		registerBehavior(new MultirotorInfluenceEmitter(this))
 		registerBehavior(new MultirotorPerceptionRetriever(this))
 		registerBehavior(new SimulationController(this))
@@ -75,8 +78,8 @@ agent KDroneSimSimulationControllerAgent {
 		emit(new StartSimulation)
 		
 		// Test:
-		every(1000) [ simPrintLogMessage("Hello world", "", 0) ]
-		in(1000) [ "1".takeOff ]
-		in(5000) [ "1".land ]
+//		every(1000) [ simPrintLogMessage("Hello world", "", 0) ]
+//		in(1000) [ "1".takeOff ]
+//		in(5000) [ "1".land ]
 	}
 }

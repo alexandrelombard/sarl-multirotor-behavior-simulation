@@ -15,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap
 import org.arakhne.afc.math.geometry.d3.d.Vector3d
 
 import static extension io.sarl.math.extensions.Vector3dExtensions.normalized
+import io.sarl.math.Vector4
 
 /** 
  * Represents the abstract reach target point behavior
@@ -121,5 +122,9 @@ abstract behavior AbstractReachTargetPoint {
 		alpha : double = 2.0) {
 		val delta = if(slidingScale < 1e-7f) 1f else 1f - Math.exp(-alpha / slidingScale)
 		return targetDirection.normalized * ((w * delta))
+	}
+	
+	def toVector3d(v: Vector4) {
+		return new Vector3d(v.x, v.y, v.z)
 	}
 }

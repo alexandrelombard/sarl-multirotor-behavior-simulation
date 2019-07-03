@@ -61,7 +61,7 @@ behavior ReachTargetPoint3D extends AbstractReachTargetPoint {
 		}
 	}
 	
-	on GroundTruthKinematicsPerception [initialized && ( occurrence.state.linearVelocity.length <= 0.01f )] {
+	on GroundTruthKinematicsPerception [initialized && (occurrence.state.linearVelocity.length <= 0.01f)] {
 		// This happens if the computed force is directed to the ground at the beginning, emit an impulsion to the sky
 		//emit(new Takeoff)
 		emit(new MoveByVelocity(new Vector3d(0.0f, 0.0f, -20.0f), periodMs / 1000.0f))
