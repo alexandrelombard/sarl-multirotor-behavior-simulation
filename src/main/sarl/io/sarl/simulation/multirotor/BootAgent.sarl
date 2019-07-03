@@ -17,15 +17,15 @@ agent BootAgent {
 	uses Lifecycle, Logging
 	
 	/** The total number of agents to spawn */
-	val agentToSpawn = 200
+	val agentToSpawn = 10
 
 	on Initialize {
+		// Run the drone spawning strategy
+		runSpawnStrategy()
+		
 		// Spawn the simulation controller agent
 		// spawn(SimulationControllerAgent)
 		spawn(KDroneSimSimulationControllerAgent)
-		
-		// Run the drone spawning strategy
-		runSpawnStrategy()
 	}
 	
 	def runSpawnStrategy() {

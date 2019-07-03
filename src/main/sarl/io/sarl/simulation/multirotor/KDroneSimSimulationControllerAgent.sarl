@@ -6,6 +6,7 @@ package io.sarl.simulation.multirotor
 import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Initialize
+import io.sarl.core.Schedules
 import io.sarl.simulation.behaviors.SimulationController
 import io.sarl.simulation.capacities.AgentBodyAffectationCapacity
 import io.sarl.simulation.capacities.ApplyInfluenceCapacity
@@ -16,17 +17,15 @@ import io.sarl.simulation.multirotor.behaviors.MultirotorInfluenceEmitter
 import io.sarl.simulation.multirotor.behaviors.MultirotorPerceptionRetriever
 import io.sarl.simulation.multirotor.capacities.MultirotorSimulationControlCapacity
 import io.sarl.simulation.multirotor.capacities.MultirotorSimulationPerceptionCapacity
-import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorControl
-import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorSimulationPerception
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorControlBatched
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorSimulationPerceptionBatched
 import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimSimulationControl
 import io.sarl.simulation.skills.BatchedPerceptionsPropagation
 import io.sarl.simulation.skills.FcfsFixedSizePoolAgentBodyAffectation
 import io.sarl.simulation.skills.influences.BatchedInfluenceApplication
 import java.util.Collections
-import io.sarl.core.Schedules
-import io.sarl.simulation.skills.influences.DirectInfluencesApplication
-import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorSimulationPerceptionBatched
-import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorControlBatched
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorSimulationPerception
+import io.sarl.simulation.multirotor.kdronesim.skills.KDroneSimMultirotorControl
 
 /**
  * Agent in charge of controlling the simulation, transmitting the influences and
@@ -47,13 +46,13 @@ agent KDroneSimSimulationControllerAgent {
 	// For test:
 	uses SimulationControlCapacity, MultirotorSimulationControlCapacity
 
-	val pool = (0 .. 200).map[it.toString].toList
+	val pool = (1 .. 10).map[it.toString].toList
 	
 	on Initialize {
 		// Install the simulation control capacities
 		setSkill(new KDroneSimSimulationControl, SimulationControlCapacity)
-		// setSkill(new KDroneSimMultirotorControl, MultirotorSimulationControlCapacity)
-		setSkill(new KDroneSimMultirotorControlBatched, MultirotorSimulationControlCapacity)
+		setSkill(new KDroneSimMultirotorControl, MultirotorSimulationControlCapacity)
+		// setSkill(new KDroneSimMultirotorControlBatched, MultirotorSimulationControlCapacity)
  		// setSkill(new KDroneSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
 		setSkill(new KDroneSimMultirotorSimulationPerceptionBatched, MultirotorSimulationPerceptionCapacity)
 		
@@ -77,7 +76,7 @@ agent KDroneSimSimulationControllerAgent {
 		registerBehavior(new SimulationController(this))
 		// endregion
 		
-		emit(new StartSimulation)
+		in(1000) [ emit(new StartSimulation) ]
 		
 		// Test:
 //		every(1000) [ simPrintLogMessage("Hello world", "", 0) ]
