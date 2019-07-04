@@ -24,8 +24,8 @@ agent BootAgent {
 		runSpawnStrategy()
 		
 		// Spawn the simulation controller agent
-		// spawn(SimulationControllerAgent)
-		spawn(KDroneSimSimulationControllerAgent)
+		spawn(AirSimSimulationControllerAgent)
+		// spawn(KDroneSimSimulationControllerAgent)
 	}
 	
 	def runSpawnStrategy() {

@@ -26,6 +26,8 @@ import io.sarl.simulation.multirotor.behaviors.MultirotorPerceptionRetriever
 import io.sarl.simulation.multirotor.skills.MockSimulationControl
 import io.sarl.simulation.multirotor.skills.MockMultirotorControl
 import io.sarl.simulation.multirotor.skills.MockMultirotorSimulationPerception
+import io.sarl.core.Schedules
+import io.sarl.core.Schedules.ContextAwareCapacityWrapper
 
 /**
  * Agent in charge of controlling the simulation, transmitting the influences and
@@ -37,15 +39,15 @@ import io.sarl.simulation.multirotor.skills.MockMultirotorSimulationPerception
  * @author Alexandre Lombard
  * 
  */
-agent SimulationControllerAgent {
+agent AirSimSimulationControllerAgent {
 	
-	uses DefaultContextInteractions, Behaviors
+	uses DefaultContextInteractions, Behaviors, Schedules
 
 	uses AgentBodyAffectationCapacity
 
 	val pool = (0 .. 10).map["S" + it].toList
 	
-	on Initialize {
+	on Initialize {		
 		// Install the simulation control capacities
 		setSkill(new AirSimSimulationControl, SimulationControlCapacity)
 		setSkill(new AirSimMultirotorControl, MultirotorSimulationControlCapacity)

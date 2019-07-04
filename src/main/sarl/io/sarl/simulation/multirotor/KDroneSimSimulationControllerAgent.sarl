@@ -51,8 +51,8 @@ agent KDroneSimSimulationControllerAgent {
 	on Initialize {
 		// Install the simulation control capacities
 		setSkill(new KDroneSimSimulationControl, SimulationControlCapacity)
-		setSkill(new KDroneSimMultirotorControl, MultirotorSimulationControlCapacity)
-		// setSkill(new KDroneSimMultirotorControlBatched, MultirotorSimulationControlCapacity)
+		// setSkill(new KDroneSimMultirotorControl, MultirotorSimulationControlCapacity)
+		setSkill(new KDroneSimMultirotorControlBatched, MultirotorSimulationControlCapacity)
  		// setSkill(new KDroneSimMultirotorSimulationPerception, MultirotorSimulationPerceptionCapacity)
 		setSkill(new KDroneSimMultirotorSimulationPerceptionBatched, MultirotorSimulationPerceptionCapacity)
 		
@@ -62,6 +62,7 @@ agent KDroneSimSimulationControllerAgent {
 			Collections.shuffle(pool)
 			return pool
 		].apply), AgentBodyAffectationCapacity)
+
 		
 		setSkill(new BatchedInfluenceApplication(
 			[t, i|i.size >= affectedBodiesCount],
